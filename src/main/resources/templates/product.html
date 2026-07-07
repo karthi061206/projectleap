@@ -10,8 +10,8 @@
     <style>
         :root {
             --bg-dark: #0f172a;
-            --bg-card: rgba(30, 41, 59, 0.7);
-            --border-color: rgba(255, 255, 255, 0.1);
+            --bg-card: rgba(30, 41, 59, 0.75);
+            --border-color: rgba(255, 255, 255, 0.12);
             --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -24,6 +24,8 @@
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         h1, h2, h3, h4, h5, .brand-font {
             font-family: 'Outfit', sans-serif;
@@ -46,10 +48,19 @@
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 2.5rem;
+            border-radius: 24px;
+            overflow: hidden;
             margin-top: 2rem;
             margin-bottom: 2.5rem;
+        }
+        .product-banner-img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .product-banner-body {
+            padding: 2.5rem;
         }
         .review-card {
             background: rgba(255, 255, 255, 0.03);
@@ -133,29 +144,34 @@
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
         <a class="navbar-brand brand-font" href="/"><i class="fa-solid fa-layer-group me-2"></i>LeapReviews</a>
-        <a href="/" class="btn-back"><i class="fa-solid fa-arrow-left me-2"></i>Back to Catalog</a>
+        <div class="d-flex align-items-center gap-3">
+            <a href="/" class="btn-back"><i class="fa-solid fa-arrow-left me-2"></i>Back to Catalog</a>
+        </div>
     </div>
 </nav>
 
-<div class="container mb-5" style="max-width: 900px;">
+<div class="container flex-grow-1 mb-5" style="max-width: 900px;">
     
     <div class="product-header">
-        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-            <div>
-                <span class="badge bg-primary bg-opacity-25 text-primary mb-2 px-3 py-2 rounded-pill border border-primary border-opacity-25">Product Details</span>
-                <h1 class="display-5 mb-2" th:text="${product.name}">Product Name</h1>
-                <p class="text-muted fs-5 mb-0" th:text="${product.description}">Product description...</p>
-            </div>
-            <div class="text-end">
-                <div class="fs-2 fw-bold text-warning">
-                    <i class="fa-solid fa-star me-1"></i><span th:text="${product.averageRating}">0.0</span>
+        <img th:src="${product.imageUrl}" class="product-banner-img" alt="Product Photography">
+        <div class="product-banner-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                <div>
+                    <span class="badge bg-primary bg-opacity-25 text-primary mb-2 px-3 py-2 rounded-pill border border-primary border-opacity-25">Featured Tech Gadget</span>
+                    <h1 class="display-5 mb-2" th:text="${product.name}">Product Name</h1>
                 </div>
-                <small class="text-muted" th:text="${product.reviewCount} + ' reviews'">0 reviews</small>
+                <div class="text-end">
+                    <div class="fs-2 fw-bold text-warning">
+                        <i class="fa-solid fa-star me-1"></i><span th:text="${product.averageRating}">0.0</span>
+                    </div>
+                    <small class="text-muted" th:text="${product.reviewCount} + ' customer reviews'">0 reviews</small>
+                </div>
             </div>
+            <p class="text-muted fs-5 mb-0" th:text="${product.description}">Product description...</p>
         </div>
     </div>
 
-    <h3 class="mb-4"><i class="fa-solid fa-comments me-2 text-info"></i>Community Reviews</h3>
+    <h3 class="mb-4"><i class="fa-solid fa-comments me-2 text-info"></i>Customer Reviews</h3>
     
     <div th:if="${product.reviews.empty}" class="text-center py-5 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color);">
         <i class="fa-regular fa-comment-dots fa-3x text-muted mb-3"></i>
