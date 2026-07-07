@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeapReviews — Product Review Platform</title>
+    <title>LeapReviews — Tech Product Review Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -45,7 +45,7 @@
             text-decoration: none;
         }
         .hero-section {
-            padding: 4rem 0 2rem;
+            padding: 3.5rem 0 2rem;
             text-align: center;
         }
         .hero-title {
@@ -55,9 +55,9 @@
         }
         .hero-subtitle {
             color: var(--text-muted);
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto 2.5rem;
+            font-size: 1.15rem;
+            max-width: 650px;
+            margin: 0 auto 2rem;
         }
         .btn-gradient {
             background: var(--accent-gradient);
@@ -127,6 +127,12 @@
             align-items: center;
             gap: 0.4rem;
         }
+        .form-control:focus, .form-select:focus {
+            background: rgba(15, 23, 42, 0.9);
+            border-color: #6366f1;
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        }
     </style>
 </head>
 <body>
@@ -135,7 +141,15 @@
     <div class="container">
         <a class="navbar-brand brand-font" href="/"><i class="fa-solid fa-layer-group me-2"></i>LeapReviews</a>
         <div class="d-flex align-items-center gap-3">
-            <a href="/add-product" class="btn btn-gradient"><i class="fa-solid fa-plus me-2"></i>Add Product</a>
+            <form th:action="@{/}" method="get" class="d-flex">
+                <input type="hidden" name="category" th:value="${selectedCategory != 'All' ? selectedCategory : ''}">
+                <input type="hidden" name="sort" th:value="${currentSort}">
+                <div class="input-group">
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Search gadgets..." style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; padding-left: 1rem; width: 200px;">
+                    <button class="btn btn-outline-secondary text-light border-secondary" type="submit" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </form>
+            <a href="/add-product" class="btn btn-gradient btn-sm py-2 px-3"><i class="fa-solid fa-plus me-2"></i>Add Product</a>
         </div>
     </div>
 </nav>
@@ -143,13 +157,40 @@
 <div class="container flex-grow-1 mb-5">
     <div class="hero-section">
         <h1 class="hero-title">Authentic Tech Product Reviews</h1>
-        <p class="hero-subtitle">Discover community ratings, read verified experiences, and share your own honest reviews on state-of-the-art tech gadgets.</p>
+        <p class="hero-subtitle">Discover community ratings, explore in-depth specs, and share your verified experiences on state-of-the-art tech gadgets.</p>
+    </div>
+
+    <!-- Category Filters and Sorting Controls -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+            <span class="text-muted small me-1"><i class="fa-solid fa-filter me-1"></i>Category:</span>
+            <a th:href="@{/(sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'All' and keyword == '' ? 'btn-primary' : 'btn-outline-secondary text-light'}">All Products</a>
+            <a th:href="@{/(category='Audio', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Audio' ? 'btn-primary' : 'btn-outline-secondary text-light'}">🎧 Audio</a>
+            <a th:href="@{/(category='Computers', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Computers' ? 'btn-primary' : 'btn-outline-secondary text-light'}">💻 Computers</a>
+            <a th:href="@{/(category='Peripherals', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Peripherals' ? 'btn-primary' : 'btn-outline-secondary text-light'}">🖱️ Peripherals</a>
+            <a th:href="@{/(category='Photography', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Photography' ? 'btn-primary' : 'btn-outline-secondary text-light'}">📷 Photography</a>
+            <a th:href="@{/(category='Tablets', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Tablets' ? 'btn-primary' : 'btn-outline-secondary text-light'}">📱 Tablets</a>
+        </div>
+        <div>
+            <form th:action="@{/}" method="get" class="d-flex align-items-center gap-2">
+                <input type="hidden" name="category" th:value="${selectedCategory != 'All' ? selectedCategory : ''}">
+                <input type="hidden" name="keyword" th:value="${keyword}">
+                <span class="text-muted small"><i class="fa-solid fa-arrow-up-z-a me-1"></i>Sort:</span>
+                <select name="sort" class="form-select form-select-sm bg-dark text-light border-secondary rounded-pill px-3" style="width: auto;" onchange="this.form.submit()">
+                    <option value="rating" th:selected="${currentSort == 'rating'}">⭐ Highest Rated</option>
+                    <option value="reviews" th:selected="${currentSort == 'reviews'}">💬 Most Reviewed</option>
+                    <option value="name" th:selected="${currentSort == 'name'}">🔤 Alphabetical (A-Z)</option>
+                </select>
+            </form>
+        </div>
     </div>
 
     <div th:if="${products.empty}" class="text-center py-5">
         <i class="fa-solid fa-box-open fa-3x mb-3 text-secondary"></i>
         <h3>No products found</h3>
-        <p class="text-muted">Get started by adding the first product to our catalog!</p>
+        <p class="text-muted" th:if="${keyword != ''}" th:text="'No review items matched your search for \"' + ${keyword} + '\"'">Try adjusting your filters or keyword search.</p>
+        <p class="text-muted" th:if="${keyword == ''}">Get started by adding a product to this category!</p>
+        <a href="/" class="btn btn-outline-light rounded-pill px-4 mt-2 me-2">Reset Filters</a>
         <a href="/add-product" class="btn btn-gradient mt-2">Add Product Now</a>
     </div>
 
@@ -160,7 +201,7 @@
                 <div class="card-body">
                     <div>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-primary bg-opacity-25 text-primary px-3 py-1 rounded-pill border border-primary border-opacity-25">Tech Gadget</span>
+                            <span class="badge bg-primary bg-opacity-25 text-primary px-3 py-1 rounded-pill border border-primary border-opacity-25" th:text="${product.category}">Tech Gadget</span>
                             <div class="rating-badge">
                                 <i class="fa-solid fa-star"></i>
                                 <span th:text="${product.averageRating}">0.0</span>

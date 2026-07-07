@@ -1,6 +1,13 @@
 package com.example.productreviewsystem.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.productreviewsystem.model.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {}
+import java.util.List;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findByCategoryIgnoreCase(String category);
+    List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
+}

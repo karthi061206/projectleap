@@ -137,6 +137,15 @@
             font-weight: 700;
             color: white;
         }
+        .progress {
+            background-color: rgba(15, 23, 42, 0.8) !important;
+            border-radius: 50px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            border-radius: 50px;
+            transition: width 0.6s ease;
+        }
     </style>
 </head>
 <body>
@@ -150,19 +159,19 @@
     </div>
 </nav>
 
-<div class="container flex-grow-1 mb-5" style="max-width: 900px;">
+<div class="container flex-grow-1 mb-5" style="max-width: 1000px;">
     
     <div class="product-header">
         <img th:src="${product.imageUrl}" class="product-banner-img" alt="Product Photography">
         <div class="product-banner-body">
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
                 <div>
-                    <span class="badge bg-primary bg-opacity-25 text-primary mb-2 px-3 py-2 rounded-pill border border-primary border-opacity-25">Featured Tech Gadget</span>
+                    <span class="badge bg-primary bg-opacity-25 text-primary mb-2 px-3 py-2 rounded-pill border border-primary border-opacity-25" th:text="${product.category}">Tech Gadget</span>
                     <h1 class="display-5 mb-2" th:text="${product.name}">Product Name</h1>
                 </div>
                 <div class="text-end">
                     <div class="fs-2 fw-bold text-warning">
-                        <i class="fa-solid fa-star me-1"></i><span th:text="${product.averageRating}">0.0</span>
+                        <i class="fa-solid fa-star me-1"></i><span th:text="${product.averageRating}">0.0</span> <small class="text-muted fs-5">/ 5</small>
                     </div>
                     <small class="text-muted" th:text="${product.reviewCount} + ' customer reviews'">0 reviews</small>
                 </div>
@@ -171,37 +180,78 @@
         </div>
     </div>
 
-    <h3 class="mb-4"><i class="fa-solid fa-comments me-2 text-info"></i>Customer Reviews</h3>
-    
-    <div th:if="${product.reviews.empty}" class="text-center py-5 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color);">
-        <i class="fa-regular fa-comment-dots fa-3x text-muted mb-3"></i>
-        <h5 class="text-muted">No reviews yet</h5>
-        <p class="text-muted mb-0">Be the first to share your experience with this product!</p>
-    </div>
-
-    <div th:each="rev : ${product.reviews}" class="review-card">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="d-flex align-items-center gap-3">
-                <div class="avatar-circle" th:text="${#strings.isEmpty(rev.username) ? 'U' : #strings.toUpperCase(#strings.substring(rev.username,0,1))}">U</div>
-                <div>
-                    <h6 class="mb-0 fw-bold" th:text="${rev.username}">Username</h6>
-                    <small class="text-muted">Verified Reviewer</small>
+    <!-- Rating Distribution Snapshot & Reviews Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-5 col-lg-4">
+            <div class="p-4 rounded-4 sticky-top" style="top: 100px; background: var(--bg-card); border: 1px solid var(--border-color);">
+                <h4 class="mb-3 brand-font"><i class="fa-solid fa-chart-column me-2 text-primary"></i>Rating Snapshot</h4>
+                <div class="text-center py-3 mb-3 border-bottom border-secondary border-opacity-25">
+                    <div class="display-3 fw-bold text-warning mb-0"><span th:text="${product.averageRating}">0.0</span></div>
+                    <div class="rating-stars fs-5 my-1">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <small class="text-muted" th:text="${product.reviewCount} + ' verified ratings'">0 ratings</small>
+                </div>
+                
+                <!-- 5 Star down to 1 Star progress bars -->
+                <div th:each="stars : ${#numbers.sequence(5, 1, -1)}" class="d-flex align-items-center gap-2 mb-2">
+                    <span class="text-muted fw-medium text-nowrap" style="width: 55px; font-size: 0.9rem;" th:text="${stars} + ' star'">5 star</span>
+                    <div class="progress flex-grow-1" style="height: 10px;">
+                        <div class="progress-bar bg-warning" role="progressbar" th:style="'width: ' + ${product.getRatingPercentage(stars)} + '%'"></div>
+                    </div>
+                    <span class="text-muted text-end" style="width: 35px; font-size: 0.85rem;" th:text="${product.getRatingCount(stars)}">0</span>
+                </div>
+                
+                <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 text-center">
+                    <a href="#write-review" class="btn btn-outline-primary rounded-pill w-100 py-2">Write a Review</a>
                 </div>
             </div>
-            <div class="rating-stars">
-                <span th:each="i : ${#numbers.sequence(1, rev.rating)}">
-                    <i class="fas fa-star"></i>
-                </span>
-                <span th:if="${rev.rating < 5}" th:each="i : ${#numbers.sequence(rev.rating + 1, 5)}">
-                    <i class="far fa-star text-muted"></i>
-                </span>
+        </div>
+
+        <div class="col-md-7 col-lg-8">
+            <h3 class="mb-4 brand-font"><i class="fa-solid fa-comments me-2 text-info"></i>Customer Reviews (<span th:text="${product.reviewCount}">0</span>)</h3>
+            
+            <div th:if="${product.reviews.empty}" class="text-center py-5 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color);">
+                <i class="fa-regular fa-comment-dots fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No reviews yet</h5>
+                <p class="text-muted mb-0">Be the first to share your experience with this product!</p>
+            </div>
+
+            <div th:each="rev : ${product.reviews}" class="review-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="avatar-circle" th:text="${#strings.isEmpty(rev.username) ? 'U' : #strings.toUpperCase(#strings.substring(rev.username,0,1))}">U</div>
+                        <div>
+                            <h6 class="mb-0 fw-bold" th:text="${rev.username}">Username</h6>
+                            <small class="text-muted">Verified Reviewer</small>
+                        </div>
+                    </div>
+                    <div class="rating-stars">
+                        <span th:each="i : ${#numbers.sequence(1, rev.rating)}">
+                            <i class="fas fa-star"></i>
+                        </span>
+                        <span th:if="${rev.rating < 5}" th:each="i : ${#numbers.sequence(rev.rating + 1, 5)}">
+                            <i class="far fa-star text-muted"></i>
+                        </span>
+                    </div>
+                </div>
+                
+                <p class="mt-3 mb-0 text-light" style="line-height: 1.6;" th:text="${rev.comment}">Review comment text...</p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-25">
+                    <small class="text-muted"><i class="fa-regular fa-calendar me-1"></i>Posted on <span th:text="${rev.createdAt}">2026-07-07</span></small>
+                    <form th:action="@{'/review/' + ${rev.id} + '/helpful'}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill text-light px-3 py-1" style="font-size: 0.85rem; border-color: rgba(255,255,255,0.2);">
+                            <i class="fa-regular fa-thumbs-up me-1 text-info"></i>Helpful (<span th:text="${rev.helpfulCount}">0</span>)
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-        <p class="mt-3 mb-0 text-light" style="line-height: 1.6;" th:text="${rev.comment}">Review comment text...</p>
     </div>
 
-    <div class="form-container">
-        <h3 class="mb-4"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Write a Review</h3>
+    <div class="form-container" id="write-review">
+        <h3 class="mb-4 brand-font"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Write a Review</h3>
         <form th:action="@{'/product/' + ${product.id} + '/reviews'}" th:object="${review}" method="post">
             <div class="row g-3">
                 <div class="col-md-6">
@@ -221,7 +271,7 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label text-muted">Your Review</label>
-                    <textarea th:field="*{comment}" class="form-control" rows="4" placeholder="What did you like or dislike about this product?" required></textarea>
+                    <textarea th:field="*{comment}" class="form-control" rows="4" placeholder="What did you like or dislike about this product? Provide specs or usage feedback..." required></textarea>
                 </div>
                 <div class="col-12 text-end mt-4">
                     <button type="submit" class="btn btn-gradient"><i class="fa-solid fa-paper-plane me-2"></i>Submit Review</button>
