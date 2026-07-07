@@ -28,7 +28,8 @@ public class ProductController {
 
     @GetMapping("/product/{id}")
     public String viewProduct(@PathVariable Long id, Model model) {
-        Product product = productRepo.findById(id).orElse(null);
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
         model.addAttribute("product", product);
         model.addAttribute("review", new Review());
         return "product";
@@ -37,7 +38,7 @@ public class ProductController {
     @PostMapping("/product/{productId}/reviews")
     public String addReview(@PathVariable Long productId, @ModelAttribute Review reviewRequest) {
         Product product = productRepo.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + productId));
 
         Review review = new Review();
         review.setUsername(reviewRequest.getUsername());
@@ -45,13 +46,9 @@ public class ProductController {
         review.setRating(reviewRequest.getRating());
         review.setProduct(product);
 
-        // Save the review to the database
         reviewRepo.save(review);
-
-        // Redirect back to the product page
         return "redirect:/product/" + productId;
     }
-
 
     @GetMapping("/add-product")
     public String showAddProductPage(Model model) {
@@ -64,6 +61,4 @@ public class ProductController {
         productRepo.save(product);
         return "redirect:/";
     }
-    
-
 }

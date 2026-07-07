@@ -1,48 +1,191 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Product Review System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeapReviews — Discover & Review Products</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
         body {
-            background-color: #f8f9fa;
-            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        h1, h2, h3, h4, h5, .brand-font {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+        .navbar {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-section {
+            padding: 4rem 0 2rem;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: 3rem;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+        .btn-gradient {
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
         }
         .product-card {
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .product-card:hover {
-            transform: scale(1.02);
+            transform: translateY(-8px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
-        h1 {
-            text-align: center;
-            margin: 30px 0;
+        .card-title {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 0.75rem;
+        }
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .rating-badge {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
             font-weight: 600;
-            color: #343a40;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .btn-view {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.6rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+        .btn-view:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .empty-state {
+            padding: 5rem 0;
+            text-align: center;
+            color: var(--text-muted);
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>🛍 Product List</h1>
-	<div class="text-center mb-4">
-	    <a href="/add-product" class="btn btn-success">➕ Add New Product</a>
-	</div>
 
-    <div class="row">
-        <div th:each="product : ${products}" class="col-md-6 col-lg-4 mb-4">
-            <div class="card product-card p-3">
-                <div class="card-body text-center">
-                    <h5 class="card-title" th:text="${product.name}"></h5>
-                    <p class="card-text text-muted" th:text="${product.description}"></p>
-                    <a th:href="@{'/product/' + ${product.id}}" class="btn btn-primary mt-2">View Reviews →</a>
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand brand-font" href="/"><i class="fa-solid fa-layer-group me-2"></i>LeapReviews</a>
+        <div class="d-flex">
+            <a href="/add-product" class="btn btn-gradient"><i class="fa-solid fa-plus me-2"></i>Add Product</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mb-5">
+    <div class="hero-section">
+        <h1 class="hero-title">Discover & Review Premium Products</h1>
+        <p class="hero-subtitle">Share your authentic experiences and explore ratings from our community of tech and product enthusiasts.</p>
+    </div>
+
+    <div th:if="${products.empty}" class="empty-state">
+        <i class="fa-solid fa-box-open fa-3x mb-3 text-secondary"></i>
+        <h3>No products found</h3>
+        <p>Get started by adding the first product to our catalog!</p>
+        <a href="/add-product" class="btn btn-gradient mt-2">Add Product Now</a>
+    </div>
+
+    <div class="row g-4">
+        <div th:each="product : ${products}" class="col-md-6 col-lg-4">
+            <div class="product-card">
+                <div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+                        <div class="rating-badge">
+                            <i class="fa-solid fa-star"></i>
+                            <span th:text="${product.averageRating}">0.0</span>
+                            <small class="text-muted" th:text="'(' + ${product.reviewCount} + ')'">(0)</small>
+                        </div>
+                    </div>
+                    <p class="card-desc" th:text="${product.description}">Product description goes here...</p>
+                </div>
+                <div class="mt-3">
+                    <a th:href="@{'/product/' + ${product.id}}" class="btn-view">
+                        View Reviews <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<footer class="text-center py-4 text-muted mt-auto border-top" style="border-color: var(--border-color) !important;">
+    <small>&copy; 2026 LeapReviews. Built with Spring Boot & Thymeleaf.</small>
+</footer>
+
 </body>
 </html>
