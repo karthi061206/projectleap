@@ -6,54 +6,36 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.productreviewsystem.model.*;
-import com.example.productreviewsystem.repository.*;
+import com.example.productreviewsystem.service.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
 public class ProductController {
 
     @Autowired
-    private ProductRepository productRepo;
+    private ProductService productService;
 
     @Autowired
-    private ReviewRepository reviewRepo;
+    private ReviewService reviewService;
 
     @GetMapping("/")
     public String viewProducts(@RequestParam(required = false) String category,
                                @RequestParam(required = false) String keyword,
                                @RequestParam(required = false, defaultValue = "rating") String sort,
                                Model model) {
-        List<Product> products;
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            products = productRepo.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword.trim(), keyword.trim());
-        } else if (category != null && !category.trim().isEmpty() && !"All".equalsIgnoreCase(category)) {
-            products = productRepo.findByCategoryIgnoreCase(category.trim());
-        } else {
-            products = productRepo.findAll();
-        }
-
-        if ("reviews".equalsIgnoreCase(sort)) {
-            products.sort((p1, p2) -> Integer.compare(p2.getReviewCount(), p1.getReviewCount()));
-        } else if ("name".equalsIgnoreCase(sort)) {
-            products.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
-        } else {
-            // default: sort by rating descending
-            products.sort((p1, p2) -> Double.compare(p2.getAverageRating(), p1.getAverageRating()));
-        }
+        List<Product> products = productService.getProducts(category, keyword, sort);
 
         model.addAttribute("products", products);
-        model.addAttribute("selectedCategory", category == null ? "All" : category);
-        model.addAttribute("keyword", keyword == null ? "" : keyword);
+        model.addAttribute("selectedCategory", (category == null || category.isBlank()) ? "All" : category.trim());
+        model.addAttribute("keyword", (keyword == null) ? "" : keyword.trim());
         model.addAttribute("currentSort", sort);
         return "index";
     }
 
     @GetMapping("/product/{id}")
     public String viewProduct(@PathVariable Long id, Model model) {
-        Product product = productRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
+        Product product = productService.getProductById(id);
         model.addAttribute("product", product);
         model.addAttribute("review", new Review());
         return "product";
@@ -61,27 +43,13 @@ public class ProductController {
 
     @PostMapping("/product/{productId}/reviews")
     public String addReview(@PathVariable Long productId, @ModelAttribute Review reviewRequest) {
-        Product product = productRepo.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + productId));
-
-        Review review = new Review();
-        review.setUsername(reviewRequest.getUsername());
-        review.setComment(reviewRequest.getComment());
-        review.setRating(reviewRequest.getRating());
-        review.setProduct(product);
-        review.setCreatedAt(LocalDate.now());
-        review.setHelpfulCount(0);
-
-        reviewRepo.save(review);
+        reviewService.addReview(productId, reviewRequest);
         return "redirect:/product/" + productId;
     }
 
     @PostMapping("/review/{reviewId}/helpful")
     public String helpfulUpvote(@PathVariable Long reviewId) {
-        Review review = reviewRepo.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid review Id:" + reviewId));
-        review.setHelpfulCount(review.getHelpfulCount() + 1);
-        reviewRepo.save(review);
+        Review review = reviewService.upvoteHelpful(reviewId);
         return "redirect:/product/" + review.getProduct().getId();
     }
 
@@ -93,7 +61,7 @@ public class ProductController {
 
     @PostMapping("/add-product")
     public String addProduct(@ModelAttribute Product product) {
-        productRepo.save(product);
+        productService.saveProduct(product);
         return "redirect:/";
     }
 }

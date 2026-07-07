@@ -1,47 +1,62 @@
+# Maven / Build Output
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+/out/
+*.class
 
-### STS ###
-.apt_generated
+# IDE - Spring Tool Suite (STS) / Eclipse
+.apt_generated/
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+# IDE - IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
-/out/
+*.ipr.workspace
 
-### NetBeans ###
+# IDE - NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# IDE - VS Code
 .vscode/
 
-### Mac OS ###
+# OS Generated Files
 .DS_Store
-
-### Windows ###
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 ehthumbs.db
+Thumbs.db
 Desktop.ini
 
-### Others ###
+# Database & Logs
 *.log
 *.sql
 *.sqlite
-*.class
+*.db
+*.mv.db
+*.trace.db
+*.h2.db
+
+# Temporary & Backup Files
+*.tmp
+*.bak
+*.swp
+*~
+*.orig

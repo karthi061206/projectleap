@@ -3,148 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${product.name} + ' — Reviews'">Product Reviews</title>
+    <title th:text="${product.name} + ' — Reviews & Specs'">Product Reviews</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --bg-card: rgba(30, 41, 59, 0.75);
-            --border-color: rgba(255, 255, 255, 0.12);
+            --bg-dark: #090d16;
+            --bg-card: rgba(26, 35, 50, 0.65);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(168, 85, 247, 0.5);
             --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            --accent-glow: rgba(168, 85, 247, 0.35);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: var(--bg-dark);
+            background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(at 15% 30%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-                radial-gradient(at 85% 70%, rgba(236, 72, 153, 0.12) 0px, transparent 50%);
+                radial-gradient(circle at 15% 30%, rgba(99, 102, 241, 0.2) 0px, transparent 50%),
+                radial-gradient(circle at 85% 70%, rgba(236, 72, 153, 0.2) 0px, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1) 0px, transparent 60%);
+            background-attachment: fixed;
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
+
         h1, h2, h3, h4, h5, .brand-font {
             font-family: 'Outfit', sans-serif;
             font-weight: 700;
         }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
         .navbar {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
         }
+
         .navbar-brand {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: 800;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+
+        .navbar-brand i {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .product-header {
             background: var(--bg-card);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
+            border-radius: 28px;
             overflow: hidden;
-            margin-top: 2rem;
-            margin-bottom: 2.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
+
         .product-banner-img {
             width: 100%;
-            height: 380px;
+            height: 420px;
             object-fit: cover;
             border-bottom: 1px solid var(--border-color);
         }
+
         .product-banner-body {
-            padding: 2.5rem;
+            padding: 3rem;
         }
-        .review-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem;
+
+        .category-tag {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 0.4rem 1.1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: inline-block;
             margin-bottom: 1rem;
-            transition: border-color 0.2s;
         }
-        .review-card:hover {
-            border-color: rgba(168, 85, 247, 0.4);
-        }
-        .rating-stars {
-            color: #fbbf24;
-            text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
-        }
-        .form-container {
-            background: var(--bg-card);
+
+        .review-card {
+            background: rgba(26, 35, 50, 0.5);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 2rem;
-            margin-top: 2rem;
+            padding: 1.8rem;
+            margin-bottom: 1.2rem;
+            transition: all 0.3s ease;
         }
-        .form-control, .form-select {
-            background: rgba(15, 23, 42, 0.6);
+
+        .review-card:hover {
+            border-color: var(--border-hover);
+            transform: translateX(6px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .rating-stars {
+            color: #fbbf24;
+            text-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .form-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-top: 3rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
         }
+
+        .form-control, .form-select {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid var(--border-color);
+            color: var(--text-main) !important;
+            border-radius: 16px;
+            padding: 0.85rem 1.2rem;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
         .form-control:focus, .form-select:focus {
-            background: rgba(15, 23, 42, 0.8);
-            border-color: #6366f1;
-            color: var(--text-main);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+            border-color: #818cf8;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
         }
+
         .form-select option {
-            background: #1e293b;
+            background: #0f172a;
             color: #fff;
         }
+
         .btn-gradient {
             background: var(--accent-gradient);
             border: none;
-            color: white;
-            padding: 0.75rem 2rem;
+            color: white !important;
+            padding: 0.85rem 2.5rem;
             border-radius: 50px;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.35);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
         }
+
         .btn-gradient:hover {
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(236, 72, 153, 0.5);
         }
+
         .btn-back {
             color: var(--text-muted);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
         }
+
         .btn-back:hover {
             color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
         }
+
         .avatar-circle {
-            width: 42px;
-            height: 42px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             background: var(--accent-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
+            font-size: 1.1rem;
             color: white;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
         }
+
         .progress {
             background-color: rgba(15, 23, 42, 0.8) !important;
             border-radius: 50px;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .progress-bar {
             border-radius: 50px;
-            transition: width 0.6s ease;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .snapshot-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            background: rgba(9, 13, 22, 0.9);
+            border-top: 1px solid var(--border-color);
+            padding: 2.5rem 0;
+            margin-top: auto;
         }
     </style>
 </head>
@@ -152,97 +256,97 @@
 
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
-        <a class="navbar-brand brand-font" href="/"><i class="fa-solid fa-layer-group me-2"></i>LeapReviews</a>
+        <a class="navbar-brand brand-font" href="/"><i class="fa-solid fa-layer-group"></i>LeapReviews</a>
         <div class="d-flex align-items-center gap-3">
-            <a href="/" class="btn-back"><i class="fa-solid fa-arrow-left me-2"></i>Back to Catalog</a>
+            <a href="/" class="btn-back"><i class="fa-solid fa-arrow-left"></i>Back to Catalog</a>
         </div>
     </div>
 </nav>
 
-<div class="container flex-grow-1 mb-5" style="max-width: 1000px;">
+<div class="container flex-grow-1 mb-5" style="max-width: 1050px;">
     
-    <div class="product-header">
+    <div class="product-header animate-fade-in">
         <img th:src="${product.imageUrl}" class="product-banner-img" alt="Product Photography">
         <div class="product-banner-body">
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
                 <div>
-                    <span class="badge bg-primary bg-opacity-25 text-primary mb-2 px-3 py-2 rounded-pill border border-primary border-opacity-25" th:text="${product.category}">Tech Gadget</span>
-                    <h1 class="display-5 mb-2" th:text="${product.name}">Product Name</h1>
+                    <span class="category-tag" th:text="${product.category}">Tech Gadget</span>
+                    <h1 class="display-5 fw-bold mb-2" th:text="${product.name}">Product Name</h1>
                 </div>
                 <div class="text-end">
-                    <div class="fs-2 fw-bold text-warning">
-                        <i class="fa-solid fa-star me-1"></i><span th:text="${product.averageRating}">0.0</span> <small class="text-muted fs-5">/ 5</small>
+                    <div class="fs-1 fw-bold text-warning d-flex align-items-center justify-content-end gap-2">
+                        <i class="fa-solid fa-star"></i><span th:text="${product.averageRating}">0.0</span> <small class="text-muted fs-5 fw-normal">/ 5</small>
                     </div>
-                    <small class="text-muted" th:text="${product.reviewCount} + ' customer reviews'">0 reviews</small>
+                    <small class="text-muted fw-medium" th:text="${product.reviewCount} + ' verified customer reviews'">0 reviews</small>
                 </div>
             </div>
-            <p class="text-muted fs-5 mb-0" th:text="${product.description}">Product description...</p>
+            <p class="text-muted fs-5 mb-0" style="line-height: 1.7;" th:text="${product.description}">Product description...</p>
         </div>
     </div>
 
     <!-- Rating Distribution Snapshot & Reviews Section -->
     <div class="row g-4 mb-5">
-        <div class="col-md-5 col-lg-4">
-            <div class="p-4 rounded-4 sticky-top" style="top: 100px; background: var(--bg-card); border: 1px solid var(--border-color);">
-                <h4 class="mb-3 brand-font"><i class="fa-solid fa-chart-column me-2 text-primary"></i>Rating Snapshot</h4>
-                <div class="text-center py-3 mb-3 border-bottom border-secondary border-opacity-25">
-                    <div class="display-3 fw-bold text-warning mb-0"><span th:text="${product.averageRating}">0.0</span></div>
-                    <div class="rating-stars fs-5 my-1">
+        <div class="col-md-5 col-lg-4 animate-fade-in" style="animation-delay: 0.15s;">
+            <div class="snapshot-card sticky-top" style="top: 100px;">
+                <h4 class="mb-3 brand-font d-flex align-items-center gap-2"><i class="fa-solid fa-chart-column text-primary"></i>Rating Snapshot</h4>
+                <div class="text-center py-3 mb-4 border-bottom border-secondary border-opacity-25">
+                    <div class="display-2 fw-bold text-warning mb-0"><span th:text="${product.averageRating}">0.0</span></div>
+                    <div class="rating-stars fs-5 my-2">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
-                    <small class="text-muted" th:text="${product.reviewCount} + ' verified ratings'">0 ratings</small>
+                    <small class="text-muted" th:text="${product.reviewCount} + ' total verified ratings'">0 ratings</small>
                 </div>
                 
                 <!-- 5 Star down to 1 Star progress bars -->
-                <div th:each="stars : ${#numbers.sequence(5, 1, -1)}" class="d-flex align-items-center gap-2 mb-2">
+                <div th:each="stars : ${#numbers.sequence(5, 1, -1)}" class="d-flex align-items-center gap-3 mb-2">
                     <span class="text-muted fw-medium text-nowrap" style="width: 55px; font-size: 0.9rem;" th:text="${stars} + ' star'">5 star</span>
                     <div class="progress flex-grow-1" style="height: 10px;">
-                        <div class="progress-bar bg-warning" role="progressbar" th:style="'width: ' + ${product.getRatingPercentage(stars)} + '%'"></div>
+                        <div class="progress-bar" role="progressbar" th:style="'width: ' + ${product.getRatingPercentage(stars)} + '%'"></div>
                     </div>
-                    <span class="text-muted text-end" style="width: 35px; font-size: 0.85rem;" th:text="${product.getRatingCount(stars)}">0</span>
+                    <span class="text-muted text-end fw-semibold" style="width: 35px; font-size: 0.85rem;" th:text="${product.getRatingCount(stars)}">0</span>
                 </div>
                 
                 <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 text-center">
-                    <a href="#write-review" class="btn btn-outline-primary rounded-pill w-100 py-2">Write a Review</a>
+                    <a href="#write-review" class="btn btn-gradient w-100 justify-content-center py-2"><i class="fa-solid fa-pen-to-square"></i>Write a Review</a>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-7 col-lg-8">
-            <h3 class="mb-4 brand-font"><i class="fa-solid fa-comments me-2 text-info"></i>Customer Reviews (<span th:text="${product.reviewCount}">0</span>)</h3>
+        <div class="col-md-7 col-lg-8 animate-fade-in" style="animation-delay: 0.25s;">
+            <h3 class="mb-4 brand-font d-flex align-items-center gap-2"><i class="fa-solid fa-comments text-info"></i>Customer Reviews (<span th:text="${product.reviewCount}">0</span>)</h3>
             
             <div th:if="${product.reviews.empty}" class="text-center py-5 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color);">
                 <i class="fa-regular fa-comment-dots fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No reviews yet</h5>
-                <p class="text-muted mb-0">Be the first to share your experience with this product!</p>
+                <h5 class="text-muted">No reviews posted yet</h5>
+                <p class="text-muted mb-0">Be the first to share your verified usage experience with this product!</p>
             </div>
 
             <div th:each="rev : ${product.reviews}" class="review-card">
-                <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="d-flex align-items-center gap-3">
                         <div class="avatar-circle" th:text="${#strings.isEmpty(rev.username) ? 'U' : #strings.toUpperCase(#strings.substring(rev.username,0,1))}">U</div>
                         <div>
-                            <h6 class="mb-0 fw-bold" th:text="${rev.username}">Username</h6>
-                            <small class="text-muted">Verified Reviewer</small>
+                            <h6 class="mb-0 fw-bold fs-5" th:text="${rev.username}">Username</h6>
+                            <span class="badge bg-success bg-opacity-25 text-success rounded-pill px-2 py-1 mt-1" style="font-size: 0.75rem;"><i class="fa-solid fa-check-circle me-1"></i>Verified Reviewer</span>
                         </div>
                     </div>
-                    <div class="rating-stars">
+                    <div class="rating-stars fs-5">
                         <span th:each="i : ${#numbers.sequence(1, rev.rating)}">
                             <i class="fas fa-star"></i>
                         </span>
                         <span th:if="${rev.rating < 5}" th:each="i : ${#numbers.sequence(rev.rating + 1, 5)}">
-                            <i class="far fa-star text-muted"></i>
+                            <i class="far fa-star text-secondary opacity-50"></i>
                         </span>
                     </div>
                 </div>
                 
-                <p class="mt-3 mb-0 text-light" style="line-height: 1.6;" th:text="${rev.comment}">Review comment text...</p>
+                <p class="mt-2 mb-0 text-light fs-6" style="line-height: 1.7;" th:text="${rev.comment}">Review comment text...</p>
                 
-                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-25">
-                    <small class="text-muted"><i class="fa-regular fa-calendar me-1"></i>Posted on <span th:text="${rev.createdAt}">2026-07-07</span></small>
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-secondary border-opacity-25">
+                    <small class="text-muted"><i class="fa-regular fa-calendar me-2"></i>Posted on <span th:text="${rev.createdAt}">2026-07-07</span></small>
                     <form th:action="@{'/review/' + ${rev.id} + '/helpful'}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill text-light px-3 py-1" style="font-size: 0.85rem; border-color: rgba(255,255,255,0.2);">
-                            <i class="fa-regular fa-thumbs-up me-1 text-info"></i>Helpful (<span th:text="${rev.helpfulCount}">0</span>)
+                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill text-light px-3 py-1 d-inline-flex align-items-center gap-2" style="font-size: 0.85rem; border-color: rgba(255,255,255,0.2); transition: all 0.2s;">
+                            <i class="fa-regular fa-thumbs-up text-info"></i><span>Helpful</span> <span class="badge bg-light text-dark rounded-pill" th:text="${rev.helpfulCount}">0</span>
                         </button>
                     </form>
                 </div>
@@ -250,31 +354,35 @@
         </div>
     </div>
 
-    <div class="form-container" id="write-review">
-        <h3 class="mb-4 brand-font"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Write a Review</h3>
+    <div class="form-container animate-fade-in" id="write-review" style="animation-delay: 0.35s;">
+        <div class="mb-4">
+            <span class="category-tag mb-2"><i class="fa-solid fa-shield-halved me-1"></i>Community Feedback</span>
+            <h3 class="brand-font mb-1">Write a Verified Review</h3>
+            <p class="text-muted">Share your detailed experience, performance ratings, and pros & cons with other tech enthusiasts.</p>
+        </div>
         <form th:action="@{'/product/' + ${product.id} + '/reviews'}" th:object="${review}" method="post">
-            <div class="row g-3">
+            <div class="row g-4">
                 <div class="col-md-6">
-                    <label class="form-label text-muted">Your Name</label>
+                    <label class="form-label text-muted fw-semibold">Your Name</label>
                     <input type="text" th:field="*{username}" class="form-control" placeholder="e.g. Alex Rivera" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label text-muted">Rating</label>
+                    <label class="form-label text-muted fw-semibold">Overall Rating</label>
                     <select th:field="*{rating}" class="form-select" required>
-                        <option value="">Select Rating</option>
-                        <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
-                        <option value="4">⭐⭐⭐⭐ (4 - Good)</option>
-                        <option value="3">⭐⭐⭐ (3 - Average)</option>
-                        <option value="2">⭐⭐ (2 - Fair)</option>
-                        <option value="1">⭐ (1 - Poor)</option>
+                        <option value="">Select Star Rating...</option>
+                        <option value="5">⭐⭐⭐⭐⭐ (5 - Exceptional & Flawless)</option>
+                        <option value="4">⭐⭐⭐⭐ (4 - Great Performance)</option>
+                        <option value="3">⭐⭐⭐ (3 - Solid / Average)</option>
+                        <option value="2">⭐⭐ (2 - Subpar / Needs Work)</option>
+                        <option value="1">⭐ (1 - Poor / Not Recommended)</option>
                     </select>
                 </div>
                 <div class="col-12">
-                    <label class="form-label text-muted">Your Review</label>
-                    <textarea th:field="*{comment}" class="form-control" rows="4" placeholder="What did you like or dislike about this product? Provide specs or usage feedback..." required></textarea>
+                    <label class="form-label text-muted fw-semibold">Detailed Review & Feedback</label>
+                    <textarea th:field="*{comment}" class="form-control" rows="5" placeholder="What did you love or dislike about this product? Include hardware specs, battery life, build quality, or everyday usage insights..." required></textarea>
                 </div>
                 <div class="col-12 text-end mt-4">
-                    <button type="submit" class="btn btn-gradient"><i class="fa-solid fa-paper-plane me-2"></i>Submit Review</button>
+                    <button type="submit" class="btn btn-gradient py-3 px-5"><i class="fa-solid fa-paper-plane me-2"></i>Publish Review</button>
                 </div>
             </div>
         </form>
@@ -282,9 +390,13 @@
 
 </div>
 
-<footer class="text-center py-4 text-muted mt-auto border-top" style="border-color: var(--border-color) !important;">
-    <small>&copy; 2026 LeapReviews. Built with Spring Boot & Thymeleaf.</small>
+<footer class="text-center">
+    <div class="container">
+        <p class="mb-1 text-light fw-medium brand-font"><i class="fa-solid fa-layer-group text-primary me-2"></i>LeapReviews Platform</p>
+        <small class="text-muted">&copy; 2026 LeapReviews. Engineered with Spring Boot 3, JPA, & Thymeleaf.</small>
+    </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

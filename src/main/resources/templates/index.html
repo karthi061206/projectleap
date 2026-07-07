@@ -3,135 +3,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeapReviews — Tech Product Review Platform</title>
+    <title>LeapReviews — Next-Gen Tech Product Review Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --bg-card: rgba(30, 41, 59, 0.75);
-            --border-color: rgba(255, 255, 255, 0.12);
+            --bg-dark: #090d16;
+            --bg-card: rgba(26, 35, 50, 0.65);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(168, 85, 247, 0.5);
             --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            --accent-glow: rgba(168, 85, 247, 0.35);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
+        
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: var(--bg-dark);
+            background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 90% 80%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.2) 0px, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.2) 0px, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1) 0px, transparent 60%);
+            background-attachment: fixed;
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
+
         h1, h2, h3, h4, h5, .brand-font {
             font-family: 'Outfit', sans-serif;
             font-weight: 700;
         }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(236, 72, 153, 0.6); }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
         .navbar {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
+            transition: all 0.3s ease;
         }
+
         .navbar-brand {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: 800;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+
+        .navbar-brand i {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .hero-section {
-            padding: 3.5rem 0 2rem;
+            padding: 4.5rem 0 3rem;
             text-align: center;
+            position: relative;
         }
+
+        .hero-badge {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+
         .hero-title {
-            font-size: 3rem;
-            letter-spacing: -1px;
-            margin-bottom: 1rem;
+            font-size: 3.8rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 1.2rem;
+            line-height: 1.15;
         }
+
+        .text-gradient {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .hero-subtitle {
             color: var(--text-muted);
-            font-size: 1.15rem;
-            max-width: 650px;
-            margin: 0 auto 2rem;
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+            font-weight: 400;
         }
+
         .btn-gradient {
             background: var(--accent-gradient);
             border: none;
-            color: white;
-            padding: 0.6rem 1.5rem;
+            color: white !important;
+            padding: 0.7rem 1.8rem;
             border-radius: 50px;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.35);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+
         .btn-gradient:hover {
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(236, 72, 153, 0.5);
         }
-        .product-card {
+
+        .filter-bar {
             background: var(--bg-card);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
             border-radius: 20px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .category-pill {
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.45rem 1.1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .category-pill:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .category-pill.active {
+            background: var(--accent-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+            font-weight: 600;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             height: 100%;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
+
         .product-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(168, 85, 247, 0.4);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-10px);
+            border-color: var(--border-hover);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.2);
         }
-        .product-img {
-            height: 220px;
+
+        .img-container {
+            height: 240px;
             width: 100%;
-            object-fit: cover;
+            overflow: hidden;
+            position: relative;
             border-bottom: 1px solid var(--border-color);
         }
+
+        .product-img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.08);
+        }
+
         .card-body {
-            padding: 1.5rem;
+            padding: 1.8rem;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
             justify-content: space-between;
         }
+
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.35rem;
+            font-weight: 700;
             color: #fff;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
+            line-height: 1.3;
+            transition: color 0.2s;
         }
+
+        .product-card:hover .card-title {
+            color: #c084fc;
+        }
+
         .card-desc {
             color: var(--text-muted);
             font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
+
         .rating-badge {
             background: rgba(251, 191, 36, 0.15);
             color: #fbbf24;
-            padding: 0.35rem 0.85rem;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 0.4rem 0.9rem;
             border-radius: 50px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
+            box-shadow: 0 4px 10px rgba(251, 191, 36, 0.15);
         }
+
+        .category-tag {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 0.35rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control, .form-select {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid var(--border-color);
+            color: var(--text-main) !important;
+            border-radius: 50px;
+            padding: 0.55rem 1.2rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
         .form-control:focus, .form-select:focus {
-            background: rgba(15, 23, 42, 0.9);
-            border-color: #6366f1;
-            color: #fff;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+            border-color: #818cf8;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+        }
+
+        .form-select option {
+            background: #0f172a;
+            color: white;
+        }
+
+        .empty-state {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+        
+        footer {
+            background: rgba(9, 13, 22, 0.9);
+            border-top: 1px solid var(--border-color);
+            padding: 2.5rem 0;
+            margin-top: auto;
         }
     </style>
 </head>
@@ -139,44 +342,47 @@
 
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
-        <a class="navbar-brand brand-font" href="/"><i class="fa-solid fa-layer-group me-2"></i>LeapReviews</a>
+        <a class="navbar-brand brand-font" href="/"><i class="fa-solid fa-layer-group"></i>LeapReviews</a>
+        
         <div class="d-flex align-items-center gap-3">
             <form th:action="@{/}" method="get" class="d-flex">
                 <input type="hidden" name="category" th:value="${selectedCategory != 'All' ? selectedCategory : ''}">
                 <input type="hidden" name="sort" th:value="${currentSort}">
                 <div class="input-group">
-                    <input type="text" name="keyword" th:value="${keyword}" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Search gadgets..." style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; padding-left: 1rem; width: 200px;">
-                    <button class="btn btn-outline-secondary text-light border-secondary" type="submit" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Search tech gadgets..." style="border-top-right-radius: 0; border-bottom-right-radius: 0; width: 220px;">
+                    <button class="btn btn-outline-secondary text-light border-secondary px-3" type="submit" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px; border-left: none; background: rgba(30, 41, 59, 0.8);"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </form>
-            <a href="/add-product" class="btn btn-gradient btn-sm py-2 px-3"><i class="fa-solid fa-plus me-2"></i>Add Product</a>
+            <a href="/add-product" class="btn btn-gradient btn-sm py-2 px-4"><i class="fa-solid fa-plus"></i>Add Product</a>
         </div>
     </div>
 </nav>
 
 <div class="container flex-grow-1 mb-5">
-    <div class="hero-section">
-        <h1 class="hero-title">Authentic Tech Product Reviews</h1>
-        <p class="hero-subtitle">Discover community ratings, explore in-depth specs, and share your verified experiences on state-of-the-art tech gadgets.</p>
+    <div class="hero-section animate-fade-in">
+        <span class="hero-badge"><i class="fa-solid fa-sparkles me-2"></i>Community-Driven Tech Platform</span>
+        <h1 class="hero-title">Authentic Reviews for<br><span class="text-gradient">Next-Gen Tech Gadgets</span></h1>
+        <p class="hero-subtitle">Explore community ratings, discover deep hardware specifications, and share your verified experiences on cutting-edge gadgets and electronics.</p>
     </div>
 
     <!-- Category Filters and Sorting Controls -->
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+    <div class="filter-bar d-flex justify-content-between align-items-center flex-wrap gap-3 animate-fade-in" style="animation-delay: 0.15s;">
         <div class="d-flex gap-2 flex-wrap align-items-center">
-            <span class="text-muted small me-1"><i class="fa-solid fa-filter me-1"></i>Category:</span>
-            <a th:href="@{/(sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'All' and keyword == '' ? 'btn-primary' : 'btn-outline-secondary text-light'}">All Products</a>
-            <a th:href="@{/(category='Audio', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Audio' ? 'btn-primary' : 'btn-outline-secondary text-light'}">🎧 Audio</a>
-            <a th:href="@{/(category='Computers', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Computers' ? 'btn-primary' : 'btn-outline-secondary text-light'}">💻 Computers</a>
-            <a th:href="@{/(category='Peripherals', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Peripherals' ? 'btn-primary' : 'btn-outline-secondary text-light'}">🖱️ Peripherals</a>
-            <a th:href="@{/(category='Photography', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Photography' ? 'btn-primary' : 'btn-outline-secondary text-light'}">📷 Photography</a>
-            <a th:href="@{/(category='Tablets', sort=${currentSort})}" class="btn btn-sm rounded-pill px-3" th:classappend="${selectedCategory == 'Tablets' ? 'btn-primary' : 'btn-outline-secondary text-light'}">📱 Tablets</a>
+            <span class="text-muted small fw-semibold me-1"><i class="fa-solid fa-filter me-1 text-primary"></i>Category:</span>
+            <a th:href="@{/(sort=${currentSort})}" class="category-pill" th:classappend="${selectedCategory == 'All' and keyword == '' ? 'active' : ''}">🌟 All</a>
+            <a th:href="@{/(category=Audio, sort=${currentSort})}" class="category-pill" th:classappend="${selectedCategory == 'Audio' ? 'active' : ''}">🎧 Audio</a>
+            <a th:href="@{/(category=Computers, sort=${currentSort})}" class="category-pill" th:classappend="${selectedCategory == 'Computers' ? 'active' : ''}">💻 Computers</a>
+            <a th:href="@{/(category=Peripherals, sort=${currentSort})}" class="category-pill" th:classappend="${selectedCategory == 'Peripherals' ? 'active' : ''}">🖱️ Peripherals</a>
+            <a th:href="@{/(category=Photography, sort=${currentSort})}" class="category-pill" th:classappend="${selectedCategory == 'Photography' ? 'active' : ''}">📷 Photography</a>
+            <a th:href="@{/(category=Tablets, sort=${currentSort})}" class="category-pill" th:classappend="${selectedCategory == 'Tablets' ? 'active' : ''}">📱 Tablets</a>
+            <a th:href="@{/(category=Other, sort=${currentSort})}" class="category-pill" th:classappend="${selectedCategory == 'Other' ? 'active' : ''}">🔌 Other</a>
         </div>
         <div>
             <form th:action="@{/}" method="get" class="d-flex align-items-center gap-2">
                 <input type="hidden" name="category" th:value="${selectedCategory != 'All' ? selectedCategory : ''}">
                 <input type="hidden" name="keyword" th:value="${keyword}">
-                <span class="text-muted small"><i class="fa-solid fa-arrow-up-z-a me-1"></i>Sort:</span>
-                <select name="sort" class="form-select form-select-sm bg-dark text-light border-secondary rounded-pill px-3" style="width: auto;" onchange="this.form.submit()">
+                <span class="text-muted small fw-semibold"><i class="fa-solid fa-arrow-up-z-a me-1 text-primary"></i>Sort:</span>
+                <select name="sort" class="form-select form-select-sm" style="width: auto; cursor: pointer;" onchange="this.form.submit()">
                     <option value="rating" th:selected="${currentSort == 'rating'}">⭐ Highest Rated</option>
                     <option value="reviews" th:selected="${currentSort == 'reviews'}">💬 Most Reviewed</option>
                     <option value="name" th:selected="${currentSort == 'name'}">🔤 Alphabetical (A-Z)</option>
@@ -185,35 +391,41 @@
         </div>
     </div>
 
-    <div th:if="${products.empty}" class="text-center py-5">
-        <i class="fa-solid fa-box-open fa-3x mb-3 text-secondary"></i>
-        <h3>No products found</h3>
-        <p class="text-muted" th:if="${keyword != ''}" th:text="'No review items matched your search for \"' + ${keyword} + '\"'">Try adjusting your filters or keyword search.</p>
-        <p class="text-muted" th:if="${keyword == ''}">Get started by adding a product to this category!</p>
-        <a href="/" class="btn btn-outline-light rounded-pill px-4 mt-2 me-2">Reset Filters</a>
-        <a href="/add-product" class="btn btn-gradient mt-2">Add Product Now</a>
+    <!-- Empty State -->
+    <div th:if="${products.empty}" class="empty-state animate-fade-in" style="animation-delay: 0.25s;">
+        <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
+        <h3 class="brand-font mb-2">No products found</h3>
+        <p class="text-muted mb-4" th:if="${keyword != ''}" th:text="'No review items matched your search for \"' + ${keyword} + '\"'">Try adjusting your filters or keyword search.</p>
+        <p class="text-muted mb-4" th:if="${keyword == ''}">Get started by adding a tech gadget to this category!</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/" class="btn btn-outline-light rounded-pill px-4 py-2">Reset Filters</a>
+            <a href="/add-product" class="btn btn-gradient py-2 px-4"><i class="fa-solid fa-plus"></i>Add Product Now</a>
+        </div>
     </div>
 
+    <!-- Products Grid -->
     <div class="row g-4">
-        <div th:each="product : ${products}" class="col-md-6 col-lg-4">
+        <div th:each="product, stat : ${products}" class="col-md-6 col-lg-4 animate-fade-in" th:style="'animation-delay: ' + (0.15 + stat.index * 0.08) + 's;'">
             <div class="product-card">
-                <img th:src="${product.imageUrl}" class="product-img" alt="Product Photography">
+                <div class="img-container">
+                    <img th:src="${product.imageUrl}" class="product-img" alt="Product Photography">
+                </div>
                 <div class="card-body">
                     <div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-primary bg-opacity-25 text-primary px-3 py-1 rounded-pill border border-primary border-opacity-25" th:text="${product.category}">Tech Gadget</span>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="category-tag" th:text="${product.category}">Tech Gadget</span>
                             <div class="rating-badge">
                                 <i class="fa-solid fa-star"></i>
                                 <span th:text="${product.averageRating}">0.0</span>
-                                <small class="text-muted" th:text="'(' + ${product.reviewCount} + ')'">(0)</small>
+                                <small class="text-muted fw-normal" th:text="'(' + ${product.reviewCount} + ')'">(0)</small>
                             </div>
                         </div>
-                        <h5 class="card-title mt-2" th:text="${product.name}">Product Name</h5>
+                        <h5 class="card-title" th:text="${product.name}">Product Name</h5>
                         <p class="card-desc" th:text="${product.description}">Product description goes here...</p>
                     </div>
                     
-                    <a th:href="@{'/product/' + ${product.id}}" class="btn btn-gradient text-center w-100 mt-2">
-                        View Reviews & Rate <i class="fa-solid fa-arrow-right ms-2"></i>
+                    <a th:href="@{'/product/' + ${product.id}}" class="btn btn-gradient text-center w-100 justify-content-center py-2 mt-2">
+                        <span>Explore & Rate</span> <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -221,9 +433,13 @@
     </div>
 </div>
 
-<footer class="text-center py-4 text-muted mt-auto border-top" style="border-color: var(--border-color) !important;">
-    <small>&copy; 2026 LeapReviews. Built with Spring Boot & Thymeleaf.</small>
+<footer class="text-center">
+    <div class="container">
+        <p class="mb-1 text-light fw-medium brand-font"><i class="fa-solid fa-layer-group text-primary me-2"></i>LeapReviews Platform</p>
+        <small class="text-muted">&copy; 2026 LeapReviews. Engineered with Spring Boot 3, JPA, & Thymeleaf.</small>
+    </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

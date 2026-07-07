@@ -1,6 +1,7 @@
 package com.example.productreviewsystem.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -10,26 +11,26 @@ public class Product {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String name = "Untitled Product";
 
     @Column(length = 1000)
-    private String description;
+    private String description = "No description provided.";
 
     @Column(length = 1000)
-    private String imageUrl;
+    private String imageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80";
 
-    private String category;
+    private String category = "Tech Gadgets";
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     public Product() {}
 
     public Product(String name, String description, String imageUrl, String category) {
-        this.name = name;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.category = category;
+        this.name = (name != null && !name.isBlank()) ? name.trim() : "Untitled Product";
+        this.description = (description != null && !description.isBlank()) ? description.trim() : "No description provided.";
+        this.imageUrl = (imageUrl != null && !imageUrl.isBlank()) ? imageUrl.trim() : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80";
+        this.category = (category != null && !category.isBlank()) ? category.trim() : "Tech Gadgets";
     }
 
     // Helper methods for clean UI display
@@ -59,14 +60,14 @@ public class Product {
     // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public String getImageUrl() { return imageUrl != null && !imageUrl.isBlank() ? imageUrl : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80"; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-    public String getCategory() { return category != null && !category.isBlank() ? category : "Tech Gadgets"; }
-    public void setCategory(String category) { this.category = category; }
-    public List<Review> getReviews() { return reviews; }
-    public void setReviews(List<Review> reviews) { this.reviews = reviews; }
+    public String getName() { return name != null ? name : "Untitled Product"; }
+    public void setName(String name) { this.name = (name != null && !name.isBlank()) ? name.trim() : "Untitled Product"; }
+    public String getDescription() { return description != null ? description : "No description provided."; }
+    public void setDescription(String description) { this.description = (description != null && !description.isBlank()) ? description.trim() : "No description provided."; }
+    public String getImageUrl() { return (imageUrl != null && !imageUrl.isBlank()) ? imageUrl : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80"; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = (imageUrl != null && !imageUrl.isBlank()) ? imageUrl.trim() : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80"; }
+    public String getCategory() { return (category != null && !category.isBlank()) ? category : "Tech Gadgets"; }
+    public void setCategory(String category) { this.category = (category != null && !category.isBlank()) ? category.trim() : "Tech Gadgets"; }
+    public List<Review> getReviews() { return reviews != null ? reviews : new ArrayList<>(); }
+    public void setReviews(List<Review> reviews) { this.reviews = reviews != null ? reviews : new ArrayList<>(); }
 }
